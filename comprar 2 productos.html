@@ -1,0 +1,185 @@
+<html>
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+function c(){console.log(arguments[0]);}
+
+function calcular(cantidad, monedero, prodCaro, prodBarato){
+	$("#resultado").empty();
+	
+	if( monedero < prodBarato ){
+    	$("#resultado").append("No puedes comprar nada.");
+    } else {
+    	// buscar pequeño
+		var cantidadBarato = 0;
+		for( var i=0 ; i<cantidad ; i++ ){
+        	if( (i+1) * prodBarato <= monedero){
+            	cantidadBarato++;
+            } else {
+            	break;
+            }
+        }
+        
+        // Buscar caro
+        var cantidadCaro = 0;
+        for( var i=0 ; i<cantidad ; i++ ){
+        	if( ((cantidadBarato -1) * prodBarato) + ((i+1) * prodCaro) <= monedero){
+            	cantidadBarato--;
+                cantidadCaro++;
+            } else {
+            	break;
+            }
+        }
+		
+        $("#resultado").append(
+			"<div class=\"linea\">Con "+ monedero +" se pueden comprar:"
+		+	"<br/><span class=\"kd\">"+ cantidadCaro +"</span> Caros"
+		+	"<br/><span class=\"kd\">"+ cantidadBarato +"</span> Baratos"
+		+	"<br/>Coste: "+ (cantidadBarato * prodBarato + cantidadCaro * prodCaro) +" de "+ monedero
+		+	"<br/>Cambio: "+ (monedero - (cantidadBarato * prodBarato + cantidadCaro * prodCaro)) +"</div>");
+    }
+}
+
+function ejecutarCalculo(){
+	calcular(
+		parseInt($("#cantidad").val()),
+		parseInt($("#dinero").val()),
+		parseInt($("#caro").val()),
+		parseInt($("#barato").val())
+	)
+}
+//calcular(14, 389, 62, 25);
+$(document).ready(function(){
+	console.log($("input").length)
+	
+	$("input").css("height", "Calc((100% / "+ $("input").length +") - 6px)");
+	$(".derecha div").css("height", "Calc((100% / "+ $(".derecha div").length +") - 6px - 15px)");
+	
+	setTimeout(function(){
+		ejecutarCalculo();
+	}, 650);
+	$("input")
+		.click(ejecutarCalculo)
+		.keyup(ejecutarCalculo)
+	;
+});
+</script>
+<style>
+	html{
+		overflow:	hidden;
+		width:	90%;
+		height:	Calc(95% - 1px);
+		
+		margin-top: 5%;
+		margin-left:	5%;
+		
+		background: #0A0523 url("https://es.stardewvalleywiki.com/mediawiki/skins/Vector/stardewimages/stardewbackground.png") no-repeat fixed center center / cover;
+	}
+	*{
+		margin:		0px;
+		padding:	0px;
+		font-family:	Ebrima, Sans-serif;
+	}
+	
+	#cabecera{
+		width:	100%;
+		height:	Calc(25% - 20px);
+		
+		padding:	10px 0px;
+		
+		background-image:		url("https://stardewvalleywiki.com/mediawiki/images/6/68/Main_Logo.png");
+		background-repeat:		no-repeat;
+		background-size:		auto Calc(100% - 20px);
+		background-position:	50% Calc(0% + 10px);
+		
+		border-radius:	10% 10% 4px 4px;
+	}
+	#contenedor{
+		width:	100%;
+		height:	Calc(50% - 20px);
+		
+		padding:	10px 0px;
+	}
+	#resultado{
+		width:	Calc(100% - 70px);
+		height:	Calc(25% - 26px);
+		
+		padding:	13px 35px;
+		border-radius:	4px 4px 3px 3px;
+	}
+	
+	.izquierda,.derecha{
+		float:	left;
+		width:	50%;
+		height:	100%;
+	}
+	.izquierda, .derecha{
+		border-radius:	4px;
+	}
+	
+	input{
+		float:	right;
+		
+		width:	Calc(100% - 20px);
+		
+		margin:			3px 10px;
+		
+		text-align:	right;
+		font-size:	25px;
+		border-color:	rgba(0, 0, 0, 0.2);
+		background-color:	rgba(255, 255, 255, 0.8);
+		border-radius:	4px 25% 25% 4px;
+	}
+	
+	.derecha div{
+		float:	left;
+		
+		width:	Calc(100% - 20px);
+		
+		margin:			3px 10px;
+		
+		padding-top:	15px;
+		
+		font-size:	20px;
+	}
+	.izquierda,
+	.derecha,
+	#resultado,
+	#cabecera{
+		background-color:	rgba(245, 245, 255, 0.6);
+	}
+	.kd{
+		font-weight:	bold;
+	}
+</style>
+</head>
+<body>
+	<div id="cabecera">
+	</div>
+	<div id="contenedor">
+		<div class="izquierda">
+			<input id="cantidad"	type="number"	min="1"	value="10"		tabindex="1" autofocus/>
+			<input id="dinero"		type="number"	min="1"	value="100"		tabindex="2"/>
+			<input id="caro"		type="number"	min="1"	value="18"		tabindex="3"/>
+			<input id="barato"		type="number"	min="1"	value="6"		tabindex="4"/>
+		</div>
+		<div class="derecha">
+			<div>
+				Cantidad
+			</div>
+			<div>
+				Dinero
+			</div>
+			<div>
+				Producto caro
+			</div>
+			<div>
+				Producto barato
+			</div>
+		</div>
+	</div>
+	<div id="resultado">
+		Cargando ...
+	</div>
+</body>
+</html>
